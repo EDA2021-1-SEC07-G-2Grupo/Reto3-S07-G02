@@ -37,8 +37,11 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
-
+    print("2-  Caracterizar las reproducciones")
+    print("3- Encontrar música para festejar")
+    print("4-  Encontrar música para estudiar")
+    print("5-   Estudiar los géneros musicales")
+    print("6-  : Indicar el género musical más escuchado en el tiempo")
 catalog = None
 
 """
@@ -51,6 +54,18 @@ while True:
         print("Cargando información de los archivos ....")
 
     elif int(inputs[0]) == 2:
+        pass
+
+    elif int(inputs[0]) == 3:
+        pass
+
+    elif int(inputs[0]) == 4:
+        pass
+
+    elif int(inputs[0]) == 5:
+        pass
+
+    elif int(inputs[0]) == 6:
         pass
 
     else:
