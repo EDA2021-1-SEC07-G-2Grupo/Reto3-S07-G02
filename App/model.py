@@ -36,10 +36,34 @@ assert cf
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
+def newCatalog():
+   
+    catalog = {'content': None,
+               'sentiment_val': None,
+               'hashtag_track': None,
+              }
+    catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
+
+
+    catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
+    catalog['hashtag_track'] =  lt.newList('ARRAY_LIST', compareIds)
+
+    return catalog
 
 # Construccion de modelos
 
 # Funciones para agregar informacion al catalogo
+
+def addcontent(catalog, content):
+    lt.addLast(catalog['content'], content)
+
+def addSentiment(catalog,valuesent):
+    lt.addLast(catalog["sentiment_val"],valuesent)
+
+def addHashtagtrack(catalog,hashtag):
+    lt.addLast(catalog["hashtag_track"],hashtag)
+
+
 
 # Funciones para creacion de datos
 
@@ -48,3 +72,14 @@ los mismos.
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+
+def compareIds(id1, id2):
+    """
+    Compara dos crimenes
+    """
+    if (id1 == id2):
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1

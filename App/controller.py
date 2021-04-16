@@ -31,6 +31,55 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de libros
 
+def initCatalog():
+    """
+    Llama la funcion de inicializacion del catalogo del modelo.
+    """
+    catalog = model.newCatalog()
+    return catalog
+
+def loadData(catalog):
+    """
+    Carga los datos de los archivos y cargar los datos en la
+    estructura de datos
+    """
+
+    loaduser_track_hastag(catalog)
+    Loadcontext_content_fratures(catalog)
+    loadSentiment_value(catalog)
+
+
+def Loadcontext_content_fratures(catalog):
+    """
+    
+    """
+    Contentfile = cf.data_dir + 'context_content_features-5pct.csv'
+    input_file = csv.DictReader(open(Contentfile, encoding='utf-8'), delimiter=",")
+    for content in input_file:
+        model.addcontent(catalog,content)
+        
+
+
+def loadSentiment_value(catalog):
+    """
+    Carga la información que asocia tags con libros.
+    """
+    valueSentimentFile = cf.data_dir + 'sentiment_values.csv'
+    input_file = csv.DictReader(open(valueSentimentFile, encoding='utf-8'), delimiter=",")
+    for valuesent in input_file:
+        model.addSentiment(catalog, valuesent)
+
+
+def loaduser_track_hastag(catalog):
+    """
+    Carga la información que asocia tags con libros.
+    """
+    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-5pct.csv'
+    input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
+    for hashtagtrack in input_file:
+        model.addHashtagtrack(catalog, hashtagtrack)
+
+
 # Funciones para la carga de datos
 
 # Funciones de ordenamiento

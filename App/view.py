@@ -33,17 +33,30 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
-
+def print_separador():
+    print("-----------------------------------------------(°(工)°)--------------------------------------------")
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
+    print("1-  Cargar información en el catálogo")
     print("2-  Caracterizar las reproducciones")
-    print("3- Encontrar música para festejar")
+    print("3-  Encontrar música para festejar")
     print("4-  Encontrar música para estudiar")
-    print("5-   Estudiar los géneros musicales")
-    print("6-  : Indicar el género musical más escuchado en el tiempo")
+    print("5-  Estudiar los géneros musicales")
+    print("6-  Indicar el género musical más escuchado en el tiempo")
 catalog = None
 
+def initCatalog():
+    """
+    Inicializa el catalogo de videos
+    """
+    return controller.initCatalog()
+
+
+def loadData(catalog):
+    """
+    Carga los videos en la estructura de datos
+    """
+    controller.loadData(catalog)
 """
 Menu principal
 """
@@ -51,7 +64,12 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        
+        print_separador()    
         print("Cargando información de los archivos ....")
+
+        catalog = controller.initCatalog()
+        espacio_tiempo=controller.loadData(catalog)
 
     elif int(inputs[0]) == 2:
         pass
