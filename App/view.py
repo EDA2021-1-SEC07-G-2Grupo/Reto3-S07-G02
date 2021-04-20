@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import orderedmap as om
 assert cf
 
 
@@ -67,12 +68,22 @@ while True:
         
         print_separador()    
         print("Cargando información de los archivos ....")
-
         catalog = controller.initCatalog()
         espacio_tiempo=controller.loadData(catalog)
+        print_separador()
+        print ("El total de registros cargados es de: "+str(lt.size(catalog["content"])))
+        print("Total de artistas (sin repeticiones): " +str(om.size(catalog['artist'])))
+        print("Total de pistas cargadas: ")
+        print_separador()
+        print("los primeros 5 eventos: ")
+        print(lt.size(om.valueSet(catalog["artist"])))
+
 
     elif int(inputs[0]) == 2:
-        pass
+        caracteristica=str(input("Escriba la caracteristica que desea consultar"))
+        valor_min=int(input("Escriba el valor minimo de la carecteristica que desea consultar"))
+        valor_max=int(input("Escriba el valor maximo de la caracteristica que desea consultar"))
+
 
     elif int(inputs[0]) == 3:
         pass

@@ -30,6 +30,8 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
+from DISClib.ADT import map as m
 assert cf
 
 """
@@ -41,12 +43,15 @@ def newCatalog():
     catalog = {'content': None,
                'sentiment_val': None,
                'hashtag_track': None,
+               "artist": None
               }
     catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
-
-
     catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
     catalog['hashtag_track'] =  lt.newList('ARRAY_LIST', compareIds)
+    #trees
+    catalog['artist'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+
 
     return catalog
 
@@ -55,19 +60,72 @@ def newCatalog():
 # Funciones para agregar informacion al catalogo
 
 def addcontent(catalog, content):
+    updateIndex(catalog['artist'], content,"artist_id","track_id")
     lt.addLast(catalog['content'], content)
+    return catalog
 
 def addSentiment(catalog,valuesent):
     lt.addLast(catalog["sentiment_val"],valuesent)
+    return catalog
 
 def addHashtagtrack(catalog,hashtag):
     lt.addLast(catalog["hashtag_track"],hashtag)
-
+    return catalog
 
 
 # Funciones para creacion de datos
+def updateIndex(map, content, llave, indice):
+    num = content[llave]
+    entry = om.get(map, num )
+    if entry is None:
+        datentry = newdataentry(content)
+        om.put(map, num, datentry)
+    else:
+        datentry = me.getValue(entry)
+    addIndex(datentry,content,indice)
+    return map
+
+def newdataentry(content):
+    entry = {'index': None, 'song': None}
+    entry['index'] = m.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=comparekeys)
+    entry['song'] = lt.newList('SINGLE_LINKED', compareIds)
+    return entry
+
+
+def addIndex(datentry, contenido,indice):
+    lst = datentry['song']
+    lt.addLast(lst, contenido)
+    indexs = datentry["index"]
+    inxentry = m.get(indexs, contenido[indice])
+    if (inxentry is None):
+        entry = newinxentry(contenido[indice], contenido)
+        lt.addLast(entry['ltssongs'], contenido)
+        m.put(indexs, contenido[indice], entry)
+    else:
+        entry = me.getValue(inxentry)
+        lt.addLast(entry['ltssongs'], contenido)
+    return datentry
+
+def newinxentry(trak_id, content):
+    """
+    Crea una entrada en el indice por tipo de crimen, es decir en
+    la tabla de hash, que se encuentra en cada nodo del arbol.
+    """
+    entry = {'song': None, 'ltssongs': None}
+    entry['song'] = trak_id
+    entry['ltssongs'] = lt.newList('SINGLELINKED', comparekeys)
+    return entry
+
+
+  
+
 
 # Funciones de consulta
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -80,6 +138,17 @@ def compareIds(id1, id2):
     if (id1 == id2):
         return 0
     elif id1 > id2:
+        return 1
+    else:
+        return -1
+def comparekeys(key1, key2):
+    """
+    Compara dos tipos de crimenes
+    """
+    key = me.getKey(key2)
+    if (key1 == key):
+        return 0
+    elif (key1 > key):
         return 1
     else:
         return -1
