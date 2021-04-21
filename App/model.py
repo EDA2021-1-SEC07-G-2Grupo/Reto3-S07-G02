@@ -43,7 +43,8 @@ def newCatalog():
     catalog = {'content': None,
                'sentiment_val': None,
                'hashtag_track': None,
-               "artist": None
+               "artist": None,
+               "track":None
               }
     catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
     catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
@@ -51,6 +52,32 @@ def newCatalog():
     #trees
     catalog['artist'] = om.newMap(omaptype='BST',
                                       comparefunction=compareIds)
+    catalog['track'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['instrumentalness'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['liveness'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['speechiness'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['danceability'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['valence'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['loudness'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['tempo'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['acousticness'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['energy'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['mode'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+    catalog['key'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareIds)
+
+  
 
 
     return catalog
@@ -61,6 +88,18 @@ def newCatalog():
 
 def addcontent(catalog, content):
     updateIndex(catalog['artist'], content,"artist_id","track_id")
+    updateIndex(catalog["track"], content,"track_id","artist_id" )
+    updateIndex(catalog['instrumentalness'], content,"instrumentalness","track_id")
+    updateIndex(catalog["liveness"], content,"liveness","artist_id" )
+    updateIndex(catalog['speechiness'], content,"speechiness","track_id")
+    updateIndex(catalog["danceability"], content,"danceability","artist_id" )
+    updateIndex(catalog['valence'], content,"valence","track_id")
+    updateIndex(catalog["loudness"], content,"loudness","artist_id" )
+    updateIndex(catalog['tempo'], content,"tempo","track_id")
+    updateIndex(catalog["acousticness"], content,"acousticness","artist_id" )
+    updateIndex(catalog['energy'], content,"energy","track_id")
+    updateIndex(catalog["mode"], content,"mode","artist_id" )
+    updateIndex(catalog['key'], content,"key","track_id")
     lt.addLast(catalog['content'], content)
     return catalog
 
@@ -118,8 +157,6 @@ def newinxentry(trak_id, content):
     entry['ltssongs'] = lt.newList('SINGLELINKED', comparekeys)
     return entry
 
-
-  
 
 
 # Funciones de consulta

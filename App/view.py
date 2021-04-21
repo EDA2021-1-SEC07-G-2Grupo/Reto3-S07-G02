@@ -46,6 +46,24 @@ def printMenu():
     print("6-  Indicar el género musical más escuchado en el tiempo")
 catalog = None
 
+def print_primeros_o_ultimos_n(first_last,n):
+    if first_last=="first":
+       i=1
+       g=1
+    elif first_last=="no":
+       i=lt.size(catalog["content"])
+       g=-1 
+       n=lt.size(catalog["content"])-5
+    print_separador()
+    while n<=i:
+        print("Evento: "+str(i))
+        mostrar=lt.getElement(catalog["content"],i)
+        for char in mostrar:
+             print(str(char)+": "+str(mostrar[char]))
+        print_separador()
+        i+=g
+
+
 def initCatalog():
     """
     Inicializa el catalogo de videos
@@ -73,16 +91,22 @@ while True:
         print_separador()
         print ("El total de registros cargados es de: "+str(lt.size(catalog["content"])))
         print("Total de artistas (sin repeticiones): " +str(om.size(catalog['artist'])))
-        print("Total de pistas cargadas: ")
+        print("Total de pistas cargadas: "+str(om.size(catalog["track"])))
         print_separador()
-        print("los primeros 5 eventos: ")
-        print(lt.size(om.valueSet(catalog["artist"])))
+        print("los primeros 5 eventos:")
+        print_primeros_o_ultimos_n("first",5)
+        print("Los ultimos 5 eventos: ")
+        print_primeros_o_ultimos_n("no",5)
 
 
     elif int(inputs[0]) == 2:
-        caracteristica=str(input("Escriba la caracteristica que desea consultar"))
-        valor_min=int(input("Escriba el valor minimo de la carecteristica que desea consultar"))
-        valor_max=int(input("Escriba el valor maximo de la caracteristica que desea consultar"))
+        caracteristica=str(input("Escriba la caracteristica que desea consultar\n"))
+        valor_min=(input("Escriba el valor minimo de la carecteristica que desea consultar\n"))
+        valor_max=(input("Escriba el valor maximo de la caracteristica que desea consultar\n"))
+        total=om.values(catalog[caracteristica],valor_min,valor_max)
+        print_separador()
+        print(caracteristica+" entre "+str(valor_min)+" hasta "+str(valor_max))
+        print ("El total de videos entre este rango es de "+str(om.size(catalog[caracteristica])))
 
 
     elif int(inputs[0]) == 3:
