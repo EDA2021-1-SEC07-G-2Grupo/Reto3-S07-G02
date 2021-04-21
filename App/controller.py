@@ -85,3 +85,13 @@ def loaduser_track_hastag(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def size_trees(map):
+    return model.size_trees(map)
+def lt_size(lista):
+    return model.lt_size(lista)
+def range_values(map,low,high):
+    return model.range_values(map,low,high)
+def conteo_range_value(lista):
+    return model.conteo_range_value(lista)
+def cmpare_two_list(list1,list2):
+    return model.cmpare_two_list(list1,list2)

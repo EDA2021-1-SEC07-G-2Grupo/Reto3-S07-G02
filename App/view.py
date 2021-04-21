@@ -89,9 +89,9 @@ while True:
         catalog = controller.initCatalog()
         espacio_tiempo=controller.loadData(catalog)
         print_separador()
-        print ("El total de registros cargados es de: "+str(lt.size(catalog["content"])))
-        print("Total de artistas (sin repeticiones): " +str(om.size(catalog['artist'])))
-        print("Total de pistas cargadas: "+str(om.size(catalog["track"])))
+        print ("El total de registros cargados es de: "+str(controller.lt_size(catalog["content"])))
+        print("Total de artistas (sin repeticiones): " +str(controller.size_trees(catalog['artist'])))
+        print("Total de pistas cargadas: "+str(controller.size_trees(catalog["track"])))
         print_separador()
         print("los primeros 5 eventos:")
         print_primeros_o_ultimos_n("first",5)
@@ -103,18 +103,25 @@ while True:
         caracteristica=str(input("Escriba la caracteristica que desea consultar\n"))
         valor_min=(input("Escriba el valor minimo de la carecteristica que desea consultar\n"))
         valor_max=(input("Escriba el valor maximo de la caracteristica que desea consultar\n"))
-        total=om.values(catalog[caracteristica],valor_min,valor_max)
+        total=controller.range_values(catalog[caracteristica],valor_min,valor_max)
         print_separador()
         print(caracteristica+" entre "+str(valor_min)+" hasta "+str(valor_max))
-        print ("El total de videos entre este rango es de "+str(om.size(catalog[caracteristica])))
+        print ("El total de videos entre este rango es de "+str(controller.conteo_range_value(total)))
 
 
     elif int(inputs[0]) == 3:
         pass
 
     elif int(inputs[0]) == 4:
-        pass
-
+        valor_min_inst=(input("Escriba el valor minimo de la carecteristica instrumentalness\n"))
+        valor_max_inst=(input("Escriba el valor maximo de la caracteristica instrumentalness\n"))
+        vid_instrumentalness= controller.range_values(catalog["instrumentalness"],valor_min_inst,valor_max_inst)
+        valor_min_tem=(input("Escriba el valor minimo de la carecteristica tempo\n"))
+        valor_max_tem=(input("Escriba el valor maximo de la caracteristica tempo\n"))
+        vid_temp= controller.range_values(catalog["tempo"],valor_min_tem,valor_max_tem)
+        one_list=controller.cmpare_two_list(vid_instrumentalness,vid_temp)
+        print (one_list)
+    
     elif int(inputs[0]) == 5:
         pass
 

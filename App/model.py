@@ -161,6 +161,27 @@ def newinxentry(trak_id, content):
 
 # Funciones de consulta
 
+def size_trees(map):
+    return om.size(map)
+def lt_size(lista):
+    return lt.size(lista)
+def range_values(map,low,high):
+    return om.values(map,low,high)
+def conteo_range_value(lista):
+    total = 0
+    for char in lt.iterator(lista):
+        total += lt.size(char['song'])
+    return total
+def cmpare_two_list(list1,list2):
+    new_list=lt.newList("ARRAY_LIST")
+    n=1
+    while n<lt.size(list1):
+        a=lt.getElement(list1,n)
+        if lt.isPresent(list2, a)>0:
+            lt.addLast(new_list,a)
+        n+=1
+
+    return new_list
 
 
 
