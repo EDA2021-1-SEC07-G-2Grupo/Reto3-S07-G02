@@ -35,7 +35,7 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 def print_separador():
-    print("-----------------------------------------------(°(工)°)--------------------------------------------")
+    print("-----------------------------------------------(^(工)^)--------------------------------------------")
 def printMenu():
     print("Bienvenido")
     print("1-  Cargar información en el catálogo")
