@@ -44,37 +44,40 @@ def newCatalog():
                'sentiment_val': None,
                'hashtag_track': None,
                "artist": None,
-               "track":None
+               "track":None,
+               "intrumentalness_tempo":None
               }
     catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
     catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
     catalog['hashtag_track'] =  lt.newList('ARRAY_LIST', compareIds)
     #trees
-    catalog['artist'] = om.newMap(omaptype='BST',
+    catalog['artist'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['track'] = om.newMap(omaptype='BST',
+    catalog['track'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['instrumentalness'] = om.newMap(omaptype='BST',
+    catalog['instrumentalness'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['liveness'] = om.newMap(omaptype='BST',
+    catalog['liveness'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['speechiness'] = om.newMap(omaptype='BST',
+    catalog['speechiness'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['danceability'] = om.newMap(omaptype='BST',
+    catalog['danceability'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['valence'] = om.newMap(omaptype='BST',
+    catalog['valence'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['loudness'] = om.newMap(omaptype='BST',
+    catalog['loudness'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['tempo'] = om.newMap(omaptype='BST',
+    catalog['tempo'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['acousticness'] = om.newMap(omaptype='BST',
+    catalog['acousticness'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['energy'] = om.newMap(omaptype='BST',
+    catalog['energy'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['mode'] = om.newMap(omaptype='BST',
+    catalog['mode'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
-    catalog['key'] = om.newMap(omaptype='BST',
+    catalog['key'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareIds)
+    catalog['intrumentalness_tempo'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
 
   
@@ -89,17 +92,18 @@ def newCatalog():
 def addcontent(catalog, content):
     updateIndex(catalog['artist'], content,"artist_id","track_id")
     updateIndex(catalog["track"], content,"track_id","artist_id" )
-    updateIndex(catalog['instrumentalness'], content,"instrumentalness","track_id")
+    updateIndex(catalog['instrumentalness'], content,"instrumentalness","artist_id")
     updateIndex(catalog["liveness"], content,"liveness","artist_id" )
-    updateIndex(catalog['speechiness'], content,"speechiness","track_id")
+    updateIndex(catalog['speechiness'], content,"speechiness","artist_id")
     updateIndex(catalog["danceability"], content,"danceability","artist_id" )
-    updateIndex(catalog['valence'], content,"valence","track_id")
+    updateIndex(catalog['valence'], content,"valence","artist_id")
     updateIndex(catalog["loudness"], content,"loudness","artist_id" )
-    updateIndex(catalog['tempo'], content,"tempo","track_id")
+    updateIndex(catalog['tempo'], content,"tempo","artist_id")
     updateIndex(catalog["acousticness"], content,"acousticness","artist_id" )
-    updateIndex(catalog['energy'], content,"energy","track_id")
+    updateIndex(catalog['energy'], content,"energy","artist_id")
     updateIndex(catalog["mode"], content,"mode","artist_id" )
-    updateIndex(catalog['key'], content,"key","track_id")
+    updateIndex(catalog['key'], content,"key","artist_id")
+    updateIndex(catalog['intrumentalness_tempo'], content,"instrumentalness","tempo")
     lt.addLast(catalog['content'], content)
     return catalog
 
@@ -172,16 +176,26 @@ def conteo_range_value(lista):
     for char in lt.iterator(lista):
         total += lt.size(char['song'])
     return total
+def conteo_llaves_unicas(lista):
+    total = 0
+    for char in lt.iterator(lista):
+        total += 1
+    return total
+   
+
 def cmpare_two_list(list1,list2):
     new_list=lt.newList("ARRAY_LIST")
-    n=1
-    while n<lt.size(list1):
-        a=lt.getElement(list1,n)
-        if lt.isPresent(list2, a)>0:
-            lt.addLast(new_list,a)
-        n+=1
-
+    for char in lt.iterator(lista):
+        if lt.isPresent(list2,char):
+            lt.addLast(new_list,char)
     return new_list
+
+
+def min_tree(catalog):
+    return om.minKey(catalog)
+def max_tree(catalog):
+    return om.maxKey(catalog)
+    
 
 
 

@@ -91,7 +91,15 @@ def lt_size(lista):
     return model.lt_size(lista)
 def range_values(map,low,high):
     return model.range_values(map,low,high)
+def conteo_llaves_unicas(lst):
+    return model.conteo_llaves_unicas(lst)
 def conteo_range_value(lista):
     return model.conteo_range_value(lista)
 def cmpare_two_list(list1,list2):
     return model.cmpare_two_list(list1,list2)
+def list_only_id(list):
+    return model.list_only_id(list)
+def min_tree(catalog):
+    return model.min_tree(catalog)
+def max_tree(catalog):
+    return model.max_tree(catalog)
