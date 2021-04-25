@@ -78,6 +78,9 @@ def loaduser_track_hastag(catalog):
     input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
+def load_genero_musical(catalog):
+        generos=["Reggae","Down-tempo","Chill-out",
+        "Hip-hop","Jazz and Funk","Pop","R&B","Rock","Metal"]
 
 
 # Funciones para la carga de datos
@@ -103,3 +106,11 @@ def min_tree(catalog):
     return model.min_tree(catalog)
 def max_tree(catalog):
     return model.max_tree(catalog)
+def random_select(list):    
+    return model.random_select(list)
+def get_caracteristic_by_id(catalog,id,caracteristica):
+    return model.get_caracteristic_by_id(catalog,id,caracteristica)
+def get_someting_map(catalog,id,dato):
+    return model.get_someting_map(catalog,id,dato)
+def len_map(catalog):
+    return model.len_map(catalog)

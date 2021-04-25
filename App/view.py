@@ -72,6 +72,16 @@ def print_primeros_o_ultimos_n(first_last,n):
         print_separador()
         i+=g
    
+def print_req_4 (list):
+    i=1
+    while i<=lt.size(list):
+        char=lt.getElement(list,i)
+          
+        print("Track "+str(i)+": "+str(char)+" with intrumentalness of "+str(controller.get_someting_map(catalog["track"],char,"instrumentalness"))+" and tempo of "+str(controller.get_someting_map(catalog["track"],char,"tempo")))
+        i+=1
+def print_tabla_generos():
+    print ("Genero              | BMP Típico")
+    print_separador_v2()
     
 
 
@@ -101,8 +111,8 @@ while True:
         espacio_tiempo=controller.loadData(catalog)
         print_separador_v2()
         print ("El total de registros cargados es de: "+str(controller.lt_size(catalog["content"])))
-        print("Total de artistas (sin repeticiones): " +str(controller.size_trees(catalog['artist'])))
-        print("Total de pistas cargadas: "+str(controller.size_trees(catalog["track"])))
+        print("Total de artistas (sin repeticiones): " +str(controller.len_map(catalog['artist'])))
+        print("Total de pistas cargadas: "+str(controller.len_map(catalog["track"])))
         print_separador_v2()
         print("los primeros 5 eventos:")
         print_primeros_o_ultimos_n("first",5)
@@ -113,9 +123,8 @@ while True:
 
     elif int(inputs[0]) == 2:
         caracteristica=str(input("Escriba la caracteristica que desea consultar\n"))
-        valor_min=(input("Escriba el valor minimo de la carecteristica que desea consultar\n"))
-        valor_max=(input("Escriba el valor maximo de la caracteristica que desea consultar\n"))
-
+        valor_min=float(input("Escriba el valor minimo de la carecteristica que desea consultar\n"))
+        valor_max=float(input("Escriba el valor maximo de la caracteristica que desea consultar\n"))
         total=controller.range_values(catalog[caracteristica],valor_min,valor_max)
         print_separador_v2()
         print(caracteristica+" entre "+str(valor_min)+" hasta "+str(valor_max))
@@ -128,21 +137,49 @@ while True:
 
     elif int(inputs[0]) == 4:
         
-        valor_min_inst=(input("Escriba el valor minimo de la carecteristica instrumentalness\n"))
-        valor_max_inst=(input("Escriba el valor maximo de la caracteristica instrumentalness\n"))
-        vid_instrumentalness= controller.range_values(catalog["instrumentalness"],valor_min_inst,valor_max_inst)
-        valor_min_tem=(input("Escriba el valor minimo de la carecteristica tempo\n"))
-        valor_max_tem=(input("Escriba el valor maximo de la caracteristica tempo\n"))
-        vid_temp= controller.range_values(catalog["tempo"],valor_min_tem,valor_max_tem)
-        print(mp.keySet(vid_temp))
-        one_list=controller.cmpare_two_list(vid_instrumentalness,vid_temp)
-        print (one_list)
+        valor_min_inst=float(input("Escriba el valor minimo de la carecteristica instrumentalness\n"))
+        valor_max_inst=float(input("Escriba el valor maximo de la caracteristica instrumentalness\n"))
+        vid_instrumentalness= controller.range_values(catalog["instrumentalness_id_trak"],valor_min_inst,valor_max_inst)
+        valor_min_tem=float(input("Escriba el valor minimo de la carecteristica tempo\n"))
+        valor_max_tem=float(input("Escriba el valor maximo de la caracteristica tempo\n"))
+        vid_temp= controller.range_values(catalog["tempo_id_track"],valor_min_tem,valor_max_tem)
+        vid_temp_rango=controller.list_only_id(vid_temp)
+        vid_instrumentalness_rango=controller.list_only_id(vid_instrumentalness)
+        print("Encontrando videos con las caracteristicas solicitadas...")
+        one_list=controller.cmpare_two_list(vid_instrumentalness_rango,vid_temp_rango)
+        print("Eligiendo videos al azar ")
+        random_election_list=controller.random_select(one_list)
+        print_separador_v2()
+        if lt.size==0:
+            print("No se ha encontrado ningún disco con ese rango de datos")
+        else:
+            print_req_4(random_election_list)
+        print_separador_v2()
+   
     
     elif int(inputs[0]) == 5:
-        pass
+        print ("\nSeleccione una opción para continuar")
+        op=int(input("1- Busqueda por nombres de genero musical"))
+        op=int(input("2- Busqueda por genero Musical unico"))
+        if op==1:
+            print_tabla_generos()
+            print("Si desea buscar más de 1 genero escriba los nombres como se muestra a continuación: ")
+            print("Ejemplo:Reggae, Hip-hop, Pop")
+            generos=str(input(" \n"))
+
+
+        elif op==2:
+            nombre_nuevo_genero=str(input("Escriba el genero que desea crear\n"))
+            val_min=float(input("valor minimo de BPM\n"))
+            val_max=float(input("valor maximo de BPM \n "))
+            
+
+
 
     elif int(inputs[0]) == 6:
-        pass
+        hora_min= input ("Escriba el valor minimo de la hora del día")
+        hora_max=input("Escriba el valor maximo de la hora del día ")
+        
 
     else:
         sys.exit(0)
