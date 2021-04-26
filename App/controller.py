@@ -47,6 +47,7 @@ def loadData(catalog):
     loaduser_track_hastag(catalog)
     Loadcontext_content_fratures(catalog)
     loadSentiment_value(catalog)
+    load_genero_musical(catalog)
 
 
 def Loadcontext_content_fratures(catalog):
@@ -79,8 +80,10 @@ def loaduser_track_hastag(catalog):
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
 def load_genero_musical(catalog):
-        generos=["Reggae","Down-tempo","Chill-out",
-        "Hip-hop","Jazz and Funk","Pop","R&B","Rock","Metal"]
+    genero_file=cf.data_dir+"tabla_generos.csv"
+    input_file = csv.DictReader(open(genero_file, encoding='utf-8'), delimiter=";")
+    for genero in input_file:
+        model.addgenero(catalog,genero)
 
 
 # Funciones para la carga de datos
@@ -114,3 +117,9 @@ def get_someting_map(catalog,id,dato):
     return model.get_someting_map(catalog,id,dato)
 def len_map(catalog):
     return model.len_map(catalog)
+def add_new_genero():
+    return model.add_new_genero()
+def lista_por_genero(generos,catalog):
+    return model.lista_por_genero(generos,catalog)
+def add_new_genero(catalog,genero,min,max):
+    return model.add_new_genero(catalog,genero,min,max)

@@ -39,6 +39,10 @@ def print_separador():
     print("-----------------------------------------------(^(工)^)--------------------------------------------")
 def print_separador_v2():
     print("***************************************************************************************************")
+def print_separador_v3():
+    print("_______________________________")
+def printtitle(string):
+    print("========================="+string+"=====================")
 def printMenu():
     print("Bienvenido")
     print("1-  Cargar información en el catálogo")
@@ -72,18 +76,48 @@ def print_primeros_o_ultimos_n(first_last,n):
         print_separador()
         i+=g
    
-def print_req_4 (list):
+def print_req_3 (list):
     i=1
     while i<=lt.size(list):
         char=lt.getElement(list,i)
           
         print("Track "+str(i)+": "+str(char)+" with intrumentalness of "+str(controller.get_someting_map(catalog["track"],char,"instrumentalness"))+" and tempo of "+str(controller.get_someting_map(catalog["track"],char,"tempo")))
         i+=1
-def print_tabla_generos():
-    print ("Genero              | BMP Típico")
-    print_separador_v2()
-    
 
+def print_tabla_generos():
+    print ("Genero| BMP_minimo|BMP_Maximo ")
+    
+    lista=mp.keySet(catalog["genero"])
+    for char in lt.iterator(lista):
+        coso=mp.get(catalog["genero"],char)
+        elemento=lt.firstElement(coso["value"]["song"])
+        print_separador_v3()
+        print(str(elemento["Genero "]) +"| "+str(elemento["BPM_minimo"])+" | "+str(elemento["BPM_maximo"]))
+
+   
+
+    
+def minimenu_req4():
+    print("1- Crear un nuevo genero musical")
+    print("2- Relizar busqueda")
+    print("3- Salir")
+def printreq4(lista,titulos):
+    titulos=titulos.split(",")
+    n=1
+    for char in titulos:
+        printtitle(str(char))
+        print("Para "+str(char)+" el tempo está entre "+str(controller.get_someting_map(catalog["genero"],char,"BPM_minimo"))+" y "+str(controller.get_someting_map(catalog["genero"],char,"BPM_maximo"))+" BPM.")
+        print("Reproducciones de "+str(char)+": "+str(controller.conteo_range_value(lt.getElement(lista,n)))+" con un total de "+str(controller.conteo_llaves_unicas(lista))+" Artistas diferentes")
+        printtitle("Algunos artistas del "+str(char))
+        o=1
+        elemento=lt.getElement(lista,n)
+
+        n+=1
+
+
+
+
+    
 
 def initCatalog():
     """
@@ -153,26 +187,36 @@ while True:
         if lt.size==0:
             print("No se ha encontrado ningún disco con ese rango de datos")
         else:
-            print_req_4(random_election_list)
+            print_req_3(random_election_list)
         print_separador_v2()
    
     
     elif int(inputs[0]) == 5:
-        print ("\nSeleccione una opción para continuar")
-        op=int(input("1- Busqueda por nombres de genero musical"))
-        op=int(input("2- Busqueda por genero Musical unico"))
-        if op==1:
-            print_tabla_generos()
-            print("Si desea buscar más de 1 genero escriba los nombres como se muestra a continuación: ")
-            print("Ejemplo:Reggae, Hip-hop, Pop")
-            generos=str(input(" \n"))
-
-
-        elif op==2:
-            nombre_nuevo_genero=str(input("Escriba el genero que desea crear\n"))
-            val_min=float(input("valor minimo de BPM\n"))
-            val_max=float(input("valor maximo de BPM \n "))
-            
+        
+        print_separador_v2()
+        n=True
+        minimenu_req4()
+        print_separador_v2()
+        a=(input("\nSeleccione una opción para continuar \n"))
+        while n == True:
+            if int(a[0])== 1:
+                nombre_genero_musical=str(input("Escriba en nombre del genero que desea crear: \n"))
+                bpm_min=int(input("Escriba el BPM minimo: \n"))
+                bpm_max=int(input ("escriba el BPM maximo: \n"))
+                controller.add_new_genero(catalog,nombre_genero_musical,bpm_min,bpm_max)
+                print_separador_v2()
+                print("Se ha creado el nuevo genero Musical")
+                print_tabla_generos()
+                n=False
+            elif int(a[0])==2:
+                print_tabla_generos()
+                generos_a_buscar=str(input("Escriba los generos que desea buscar separado por comas como se muestra en este ejemplo:Reggae, Hip-hop, Pop\n"))
+                lista_by_genero=controller.lista_por_genero(generos_a_buscar,catalog)
+                printreq4(lista_by_genero,generos_a_buscar)
+                print("Buscando...")
+                n=False
+            else:
+                n=False
 
 
 

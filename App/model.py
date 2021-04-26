@@ -46,7 +46,8 @@ def newCatalog():
                'hashtag_track': None,
                "artist": None,
                "track":None,
-               "instrumentalness_id_trak":None
+               "instrumentalness_id_trak":None,
+               "genero":None
               }
     catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
     catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
@@ -57,6 +58,10 @@ def newCatalog():
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
     catalog['track'] = mp.newMap(70000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   comparefunction=comparekeys)
+    catalog['genero'] = mp.newMap(20,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
@@ -110,6 +115,7 @@ def addcontent(catalog, content):
         addsongmap(catalog, artista, content,"artist")
     for track in track_id:
         addsongmap(catalog, track, content,"track")
+   
     #array
     lt.addLast(catalog['content'], content)
     return catalog
@@ -121,6 +127,12 @@ def addSentiment(catalog,valuesent):
 def addHashtagtrack(catalog,hashtag):
     lt.addLast(catalog["hashtag_track"],hashtag)
     return catalog
+def addgenero(catalog,genero):
+
+     generos = genero['Genero '].split(";") 
+     
+     for genero_Especifico in generos:
+        addsongmap(catalog, genero_Especifico, genero,"genero")
 
 
 # Funciones para creacion de datos
@@ -169,6 +181,9 @@ def newinxentry(trak_id, content):
     entry['song'] = trak_id
     entry['ltssongs'] = lt.newList('SINGLELINKED', comparekeys)
     return entry
+def add_new_genero(catalog,genero,min,max):
+    elemento={"Genero ":genero ,"BPM_minimo":min,"BPM_maximo":max}
+    addsongmap(catalog,genero,elemento,"genero")
 
 #//////////////////////////////////////////////////////////////////mapa
 def addsongmap(catalog, indexs, content,map_name):
@@ -253,12 +268,12 @@ def get_caracteristic_by_id(catalog,id,caracteristica):
             return elemento[caracteristica]
 def get_someting_map(catalog,id,dato):
     wow=mp.get(catalog,id)
-   
     elemento=lt.firstElement(wow["value"]["song"])
-    elemento=elemento["value"]
     return elemento[dato]
 def len_map(catalog):
     return mp.size(catalog)
+
+    
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -268,12 +283,22 @@ def cmpare_two_list(list1,list2):
         if lt.isPresent(list2,char)>0:
             lt.addLast(new_list,char)
     return new_list
+def lista_por_genero(generos,catalog):
+    lista_con_todo=generos.split(",")
+    lista_yeh=lt.newList(datastructure="ARRAY_LIST")
+    for char in lista_con_todo:
+        minimo=float(get_someting_map(catalog["genero"],char,"BPM_minimo"))
+        maximo=float(get_someting_map(catalog["genero"],char,"BPM_maximo"))
+        print(minimo)
+        print(maximo)
+        
+        lt.addLast(lista_yeh,(om.values(catalog["tempo"],minimo,maximo)))
+    return lista_yeh
+
 # Funciones de ordenamiento
 
 def compareIds(id1, id2):
-    """
-    Compara dos crimenes
-    """
+    
     if (id1 == id2):
         return 0
     elif id1 > id2:
@@ -281,9 +306,7 @@ def compareIds(id1, id2):
     else:
         return -1
 def comparekeys(key1, key2):
-    """
-    Compara dos tipos de crimenes
-    """
+    
     key = me.getKey(key2)
     if (key1 == key):
         return 0
