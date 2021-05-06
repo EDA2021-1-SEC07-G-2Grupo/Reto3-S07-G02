@@ -27,6 +27,8 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
 assert cf
+import random
+
 
 
 """
@@ -42,7 +44,7 @@ def print_separador_v2():
 def print_separador_v3():
     print("_______________________________")
 def printtitle(string):
-    print("========================="+string+"=====================")
+    print("========================="+string+"===========================")
 def printMenu():
     print("Bienvenido")
     print("1-  Cargar información en el catálogo")
@@ -101,20 +103,32 @@ def minimenu_req4():
     print("1- Crear un nuevo genero musical")
     print("2- Relizar busqueda")
     print("3- Salir")
-def printreq4(lista,titulos):
+def printreq4(titulos):
     titulos=titulos.split(",")
-    n=1
+    
     for char in titulos:
+        n=1
+        i=1
         printtitle(str(char))
         print("Para "+str(char)+" el tempo está entre "+str(controller.get_someting_map(catalog["genero"],char,"BPM_minimo"))+" y "+str(controller.get_someting_map(catalog["genero"],char,"BPM_maximo"))+" BPM.")
-        print("Reproducciones de "+str(char)+": "+str(controller.conteo_range_value(lt.getElement(lista,n)))+" con un total de "+str(controller.conteo_llaves_unicas(lista))+" Artistas diferentes")
-        printtitle("Algunos artistas del "+str(char))
-        o=1
-        elemento=lt.getElement(lista,n)
-
+        lista_total=controller.lista_por_genero(catalog,char)
+        print("Reproducciones de "+str(char)+": "+str(controller.conteo_range_value(lista_total))+" con un total de "+str(controller.conteo_llaves_unicas(lista_total))+" Artistas diferentes")
+        printtitle("Algunos artistas del genero "+str(char)+" son: ")
+        while i<=10:
+            h=random.randint(1,lt.size(lista_total))
+            elemento=lt.getElement(lista_total,h)
+            first=elemento["song"]["first"]
+            
+            print ("Artista "+str(i)+": "+str(first["info"]["artist_id"]))
+            i+=1
         n+=1
+               
+               
+def print_total_track_req5(list,hora_min,hora_max):
+    print("Hay un total de "+str(controller.conteo_range_value(list))+"reproducciones entre las "+str(hora_min)+" y las"+str(hora_max))
 
-
+def print_total_genero_musical_req5(lista):
+    print("gomenasai dochte")
 
 
     
@@ -162,11 +176,13 @@ while True:
         total=controller.range_values(catalog[caracteristica],valor_min,valor_max)
         print_separador_v2()
         print(caracteristica+" entre "+str(valor_min)+" hasta "+str(valor_max))
+
         print ("El total de reproducción entre este rango es de "+str(controller.conteo_range_value(total)))
         print ("El total de artistas unicos dentro de este rango es de: "+str(controller.conteo_llaves_unicas(total)))
 
 
     elif int(inputs[0]) == 3:
+        TODO:print("req2")
         pass
 
     elif int(inputs[0]) == 4:
@@ -177,12 +193,12 @@ while True:
         valor_min_tem=float(input("Escriba el valor minimo de la carecteristica tempo\n"))
         valor_max_tem=float(input("Escriba el valor maximo de la caracteristica tempo\n"))
         vid_temp= controller.range_values(catalog["tempo_id_track"],valor_min_tem,valor_max_tem)
-        vid_temp_rango=controller.list_only_id(vid_temp)
-        vid_instrumentalness_rango=controller.list_only_id(vid_instrumentalness)
+        vid_temp_rango=controller.list_only_id(vid_temp,"track_id")
+        vid_instrumentalness_rango=controller.list_only_id(vid_instrumentalness,"track_id")
         print("Encontrando videos con las caracteristicas solicitadas...")
         one_list=controller.cmpare_two_list(vid_instrumentalness_rango,vid_temp_rango)
         print("Eligiendo videos al azar ")
-        random_election_list=controller.random_select(one_list)
+        random_election_list=controller.random_select(one_list,5)
         print_separador_v2()
         if lt.size==0:
             print("No se ha encontrado ningún disco con ese rango de datos")
@@ -210,10 +226,10 @@ while True:
                 n=False
             elif int(a[0])==2:
                 print_tabla_generos()
-                generos_a_buscar=str(input("Escriba los generos que desea buscar separado por comas como se muestra en este ejemplo:Reggae, Hip-hop, Pop\n"))
-                lista_by_genero=controller.lista_por_genero(generos_a_buscar,catalog)
-                printreq4(lista_by_genero,generos_a_buscar)
+                generos_a_buscar=str(input("Escriba los generos que desea buscar separado por comas como se muestra en este ejemplo:Reggae,Hip-hop,Pop\n"))
                 print("Buscando...")
+                printreq4(generos_a_buscar)
+                
                 n=False
             else:
                 n=False
@@ -221,8 +237,12 @@ while True:
 
 
     elif int(inputs[0]) == 6:
-        hora_min= input ("Escriba el valor minimo de la hora del día")
-        hora_max=input("Escriba el valor maximo de la hora del día ")
+        hora_min= input ("Escriba el valor minimo de la hora del día como se muestra en el siguiente ejemplo:07:00\n")
+        hora_max=input("Escriba el valor maximo de la hora del día \n")
+        total=controller.range_values(catalog["created_at"],controller.transform_hora(hora_min),controller.transform_hora(hora_max))
+        print_total_track_req5(total,hora_min,hora_max)
+        print_total_genero_musical_req5()
+        print("El genero más refereciado es: ")
         
 
     else:

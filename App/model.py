@@ -34,6 +34,8 @@ from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as m
 assert cf
 import random
+import datetime
+import time
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -42,17 +44,13 @@ los mismos.
 def newCatalog():
    
     catalog = {'content': None,
-               'sentiment_val': None,
-               'hashtag_track': None,
                "artist": None,
                "track":None,
                "instrumentalness_id_trak":None,
                "genero":None
               }
     catalog['content'] = lt.newList('ARRAY_LIST', compareIds)
-    catalog['sentiment_val'] =  lt.newList('ARRAY_LIST', compareIds)
-    catalog['hashtag_track'] =  lt.newList('ARRAY_LIST', compareIds)
-    #maps
+   
     catalog['artist'] = mp.newMap(70000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
@@ -86,6 +84,9 @@ def newCatalog():
                                       comparefunction=compareIds)
     catalog['tempo_id_track'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
+    catalog['created_at'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareIds)
+
 
   
 
@@ -98,16 +99,17 @@ def newCatalog():
 
 def addcontent(catalog, content):
     #arbol
-    updateIndex(catalog['instrumentalness'], content,"instrumentalness","artist_id")
-    updateIndex(catalog["liveness"], content,"liveness","artist_id" )
-    updateIndex(catalog['speechiness'], content,"speechiness","artist_id")
-    updateIndex(catalog["danceability"], content,"danceability","artist_id" )
-    updateIndex(catalog['valence'], content,"valence","artist_id")
-    updateIndex(catalog['tempo'], content,"tempo","artist_id")
-    updateIndex(catalog["acousticness"], content,"acousticness","artist_id")
-    updateIndex(catalog['energy'], content,"energy","artist_id")
-    updateIndex(catalog['instrumentalness_id_trak'], content,"instrumentalness","track_id")
-    updateIndex(catalog['tempo_id_track'], content,"tempo","track_id")
+    updateIndex(catalog['instrumentalness'], content,"instrumentalness","artist_id",False)
+    updateIndex(catalog["liveness"], content,"liveness","artist_id",False )
+    updateIndex(catalog['speechiness'], content,"speechiness","artist_id",False)
+    updateIndex(catalog["danceability"], content,"danceability","artist_id",False )
+    updateIndex(catalog['valence'], content,"valence","artist_id",False)
+    updateIndex(catalog['tempo'], content,"tempo","artist_id",False)
+    updateIndex(catalog["acousticness"], content,"acousticness","artist_id",False)
+    updateIndex(catalog['energy'], content,"energy","artist_id",False)
+    updateIndex(catalog['instrumentalness_id_trak'], content,"instrumentalness","track_id",False)
+    updateIndex(catalog['tempo_id_track'], content,"tempo","track_id",False)
+   
     #map
     artist = content['artist_id'].split(",") 
     track_id = content['track_id'].split(",")  #obtener por categoría
@@ -118,15 +120,17 @@ def addcontent(catalog, content):
    
     #array
     lt.addLast(catalog['content'], content)
-    return catalog
+    
 
 def addSentiment(catalog,valuesent):
-    lt.addLast(catalog["sentiment_val"],valuesent)
-    return catalog
+    return None
+     
+    
 
 def addHashtagtrack(catalog,hashtag):
-    lt.addLast(catalog["hashtag_track"],hashtag)
-    return catalog
+    updateIndex(catalog['created_at'], hashtag,"created_at","track_id",True)
+
+
 def addgenero(catalog,genero):
 
      generos = genero['Genero '].split(";") 
@@ -136,10 +140,14 @@ def addgenero(catalog,genero):
 
 
 # Funciones para creacion de datos
-def updateIndex(map, content, llave, indice):
+def updateIndex(map, content, llave, indice,date):
     num = content[llave]
-    
-    num=float(num)
+    if date==True:
+        num = datetime.datetime.strptime(num, '%Y-%m-%d %H:%M:%S')
+        entry = om.get(map, num.time())
+        num=num.time()
+    elif date==False:
+        num=float(num)
     entry = om.get(map, num )
     if entry is None:
         datentry = newdataentry(content)
@@ -226,13 +234,15 @@ def conteo_llaves_unicas(lista):
     return total
 
 
-def list_only_id(lista):
+def list_only_id(lista,coso):
      lista_nuea=lt.newList(datastructure="ARRAY_LIST")
      for char in lt.iterator(lista):
             elemento=lt.getElement(char["song"],1)
-            lt.addLast(lista_nuea, elemento["track_id"])
+            lt.addLast(lista_nuea, elemento[coso])
      return lista_nuea
-
+def lista_1_elemento(lista,coso,i,k):
+    print(lt.size(lt.getElement(lista,i)))
+    
 
 
 
@@ -242,12 +252,12 @@ def min_tree(catalog):
 def max_tree(catalog):
     return om.maxKey(catalog)
     
-def random_select(list):
+def random_select(list,n):
     newlist=lt.newList(datastructure="ARRAY_LIST")
-    if lt.size(list)<5:
+    if lt.size(list)<n:
         n=lt.size(list)
     else:
-        n=5
+        n=n
 
     i=0
     while i<n:
@@ -266,15 +276,17 @@ def get_caracteristic_by_id(catalog,id,caracteristica):
     for char in lt.iterator(lista):
             elemento=lt.getElement(char["song"],1)
             return elemento[caracteristica]
-def get_someting_map(catalog,id,dato):
+def get_someting_map(catalog, id,dato):
     wow=mp.get(catalog,id)
     elemento=lt.firstElement(wow["value"]["song"])
     return elemento[dato]
 def len_map(catalog):
     return mp.size(catalog)
 
-    
-
+def transform_hora(hora):
+        hora=hora.strip(":")
+        print(hora)
+        return time(int(hora[0]+hora[1]),int(hora[3]+hora[4]))
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def cmpare_two_list(list1,list2):
@@ -283,17 +295,16 @@ def cmpare_two_list(list1,list2):
         if lt.isPresent(list2,char)>0:
             lt.addLast(new_list,char)
     return new_list
-def lista_por_genero(generos,catalog):
-    lista_con_todo=generos.split(",")
-    lista_yeh=lt.newList(datastructure="ARRAY_LIST")
-    for char in lista_con_todo:
-        minimo=float(get_someting_map(catalog["genero"],char,"BPM_minimo"))
-        maximo=float(get_someting_map(catalog["genero"],char,"BPM_maximo"))
-        print(minimo)
-        print(maximo)
-        
-        lt.addLast(lista_yeh,(om.values(catalog["tempo"],minimo,maximo)))
-    return lista_yeh
+
+
+
+def lista_por_genero(catalog,n):
+    minimo=float(get_someting_map(catalog["genero"],n,"BPM_minimo"))
+    maximo=float(get_someting_map(catalog["genero"],n,"BPM_maximo"))
+    tudo=(om.values(catalog["tempo"],minimo,maximo))
+  
+       
+    return tudo
 
 # Funciones de ordenamiento
 

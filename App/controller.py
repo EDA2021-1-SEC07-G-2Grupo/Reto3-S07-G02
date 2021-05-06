@@ -45,16 +45,20 @@ def loadData(catalog):
     """
 
     loaduser_track_hastag(catalog)
+    print("Se ha cargado user_track_hashtag...")
     Loadcontext_content_fratures(catalog)
+    print("Se ha cargado context_content...")
     loadSentiment_value(catalog)
+    print("Se ha cargado sentiment_value...")
     load_genero_musical(catalog)
+    print("Se ha cargado los generos musicales...")
 
 
 def Loadcontext_content_fratures(catalog):
     """
     
     """
-    Contentfile = cf.data_dir + 'context_content_features-small.csv'
+    Contentfile = cf.data_dir + 'context_content_features-smallperse.csv'
     input_file = csv.DictReader(open(Contentfile, encoding='utf-8'), delimiter=",")
     for content in input_file:
         model.addcontent(catalog,content)
@@ -75,7 +79,7 @@ def loaduser_track_hastag(catalog):
     """
     Carga la información que asocia tags con libros.
     """
-    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-smallperse.csv'
     input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
@@ -103,14 +107,14 @@ def conteo_range_value(lista):
     return model.conteo_range_value(lista)
 def cmpare_two_list(list1,list2):
     return model.cmpare_two_list(list1,list2)
-def list_only_id(list):
-    return model.list_only_id(list)
+def list_only_id(list,coso):
+    return model.list_only_id(list,coso)
 def min_tree(catalog):
     return model.min_tree(catalog)
 def max_tree(catalog):
     return model.max_tree(catalog)
-def random_select(list):    
-    return model.random_select(list)
+def random_select(list,n):    
+    return model.random_select(list,n)
 def get_caracteristic_by_id(catalog,id,caracteristica):
     return model.get_caracteristic_by_id(catalog,id,caracteristica)
 def get_someting_map(catalog,id,dato):
@@ -123,3 +127,11 @@ def lista_por_genero(generos,catalog):
     return model.lista_por_genero(generos,catalog)
 def add_new_genero(catalog,genero,min,max):
     return model.add_new_genero(catalog,genero,min,max)
+def transform_hora(hora):
+    return model.transform_hora(hora)
+def lista_1_elemento(lista,coso,i,k):
+    return lista_1_elemento(lista,coso,i,k)
+def zise_list_map(list,n):
+    return zise_list_map(list,n)
+def num_keys_list(list,n):
+    return num_keys_list(list,n)
