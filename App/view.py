@@ -125,11 +125,24 @@ def printreq4(titulos):
                
                
 def print_total_track_req5(list,hora_min,hora_max):
-    print("Hay un total de "+str(controller.conteo_range_value(list))+"reproducciones entre las "+str(hora_min)+" y las"+str(hora_max))
+    print("Hay un total de "+str(controller.conteo_range_value(list))+" reproducciones entre las "+str(hora_min)+" y las "+str(hora_max))
 
-def print_total_genero_musical_req5(lista):
-    print("gomenasai dochte")
 
+def print_total_genero_musical_req5(lista,catalog):
+    lista_imprimier=controller.cantidad_por_genero(lista,catalog)
+    print("Encontrando los mejores videos")
+    n=1
+    for char in lt.iterator(lista_imprimier):
+       
+        print("Top "+str(n)+": "+char["Genero Musica"]+" con "+str(char["Reproducciones totales"])+" reproducciones.")
+        n+=1
+    genero_top_1=lt.firstElement(lista_imprimier)
+    print("El genero musical más referenciado es: "+str(genero_top_1["Genero Musica"])+" con "+str(genero_top_1["Reproducciones totales"])+" reproducciones.")
+
+
+    
+    
+        
 
     
 
@@ -239,10 +252,11 @@ while True:
     elif int(inputs[0]) == 6:
         hora_min= input ("Escriba el valor minimo de la hora del día como se muestra en el siguiente ejemplo:07:00\n")
         hora_max=input("Escriba el valor maximo de la hora del día \n")
-        total=controller.range_values(catalog["created_at"],controller.transform_hora(hora_min),controller.transform_hora(hora_max))
+        hora_min=controller.transform_hora(hora_min)
+        hora_max=controller.transform_hora(hora_max)
+        total=controller.range_values(catalog["created_at"],hora_min, hora_max)
         print_total_track_req5(total,hora_min,hora_max)
-        print_total_genero_musical_req5()
-        print("El genero más refereciado es: ")
+        print_total_genero_musical_req5(total,catalog)
         
 
     else:

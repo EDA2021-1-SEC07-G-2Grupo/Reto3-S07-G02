@@ -29,13 +29,15 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as m
 assert cf
 import random
-import datetime
+from datetime import time
 import time
+import datetime
+
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -60,6 +62,10 @@ def newCatalog():
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
     catalog['genero'] = mp.newMap(20,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   comparefunction=comparekeys)
+    catalog['value_sent'] = mp.newMap(70000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
@@ -123,7 +129,10 @@ def addcontent(catalog, content):
     
 
 def addSentiment(catalog,valuesent):
-    return None
+    valuesents = valuesent['hashtag'].split(";") 
+     
+    for hastag in valuesents:
+        addsongmap(catalog, hastag, valuesent,"value_sent")
      
     
 
@@ -284,15 +293,23 @@ def len_map(catalog):
     return mp.size(catalog)
 
 def transform_hora(hora):
-        hora=hora.strip(":")
-        print(hora)
-        return time(int(hora[0]+hora[1]),int(hora[3]+hora[4]))
+        time=hora.split(":")
+      
+        result = datetime.time(int(time[0]),int(time[1]))
+    
+        return result
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def cmpare_two_list(list1,list2):
     new_list=lt.newList("ARRAY_LIST")
-    for char in lt.iterator(list1):
-        if lt.isPresent(list2,char)>0:
+    if lt.size(list1)>lt.size(list2):
+        lista_pequenia=list2
+        lista_grande=list1
+    else:
+        lista_pequenia=list1
+        lista_grande=list2
+    for char in lt.iterator(lista_pequenia):
+        if lt.isPresent(lista_grande,char)>0:
             lt.addLast(new_list,char)
     return new_list
 
@@ -301,12 +318,37 @@ def cmpare_two_list(list1,list2):
 def lista_por_genero(catalog,n):
     minimo=float(get_someting_map(catalog["genero"],n,"BPM_minimo"))
     maximo=float(get_someting_map(catalog["genero"],n,"BPM_maximo"))
-    tudo=(om.values(catalog["tempo"],minimo,maximo))
-  
+    tudo=(om.values(catalog["tempo"],minimo,maximo)) 
        
     return tudo
+def cantidad_por_genero(lista,catalog):
+    lista_but_ID=list_only_id(lista,"track_id")
+    generso_musicales=values_maps(catalog["genero"])
+    lista_que_se_imprime=lt.newList(datastructure="ARRAY_LIST")
+    for char in lt.iterator(generso_musicales):
+        lista_total=lista_por_genero(catalog,char)
+        tempo_genero=list_only_id(lista_total,"track_id")
+        one_list=cmpare_two_list(tempo_genero,lista_but_ID)
+        dato={"Genero Musica":str(char),"Reproducciones totales":float(lt_size(one_list))}
+        lt.addLast(lista_que_se_imprime,dato)
+    lista_organizada=organizacion(lista_que_se_imprime,lt.size(lista_que_se_imprime))
 
+    return lista_organizada
+
+
+
+def values_maps(map):
+    titulos_map=mp.keySet(map)
+    return titulos_map
 # Funciones de ordenamiento
+def cmpfuncition_merge(video1, video2):
+
+    return (float(video1["Reproducciones totales"]) > float(video2["Reproducciones totales"]))
+def organizacion(catalog,size):
+    sub_list = lt.subList(catalog,0, size)
+    sub_list = catalog.copy()
+    sorted_list=merg.sort(sub_list, cmpfuncition_merge)
+    return  sorted_list
 
 def compareIds(id1, id2):
     

@@ -135,3 +135,7 @@ def zise_list_map(list,n):
     return zise_list_map(list,n)
 def num_keys_list(list,n):
     return num_keys_list(list,n)
+def values_maps(map):
+    return model.values_maps(map)
+def cantidad_por_genero(lista,catalog):
+    return model.cantidad_por_genero(lista,catalog)
