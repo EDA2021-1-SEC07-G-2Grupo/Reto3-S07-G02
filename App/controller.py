@@ -20,9 +20,12 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import time
+import tracemalloc
 import config as cf
 import model
 import csv
+
 
 
 """
@@ -39,10 +42,9 @@ def initCatalog():
     return catalog
 
 def loadData(catalog):
-    """
-    Carga los datos de los archivos y cargar los datos en la
-    estructura de datos
-    """
+    start_time = time.process_time()
+    
+    
 
     loaduser_track_hastag(catalog)
     print("Se ha cargado user_track_hashtag...")
@@ -52,8 +54,10 @@ def loadData(catalog):
     print("Se ha cargado sentiment_value...")
     load_genero_musical(catalog)
     print("Se ha cargado los generos musicales...")
-
-
+   
+    stop_time = time.process_time()
+    elapsed_time_mseg = (stop_time - start_time)*1000
+    print(elapsed_time_mseg)
 def Loadcontext_content_fratures(catalog):
     """
     
@@ -66,9 +70,7 @@ def Loadcontext_content_fratures(catalog):
 
 
 def loadSentiment_value(catalog):
-    """
-    Carga la información que asocia tags con libros.
-    """
+   
     valueSentimentFile = cf.data_dir + 'sentiment_values.csv'
     input_file = csv.DictReader(open(valueSentimentFile, encoding='utf-8'), delimiter=",")
     for valuesent in input_file:
@@ -76,13 +78,14 @@ def loadSentiment_value(catalog):
 
 
 def loaduser_track_hastag(catalog):
-    """
-    Carga la información que asocia tags con libros.
-    """
+
+
     HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-smallperse.csv'
     input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
+
+        
 def load_genero_musical(catalog):
     genero_file=cf.data_dir+"tabla_generos.csv"
     input_file = csv.DictReader(open(genero_file, encoding='utf-8'), delimiter=";")
@@ -91,6 +94,7 @@ def load_genero_musical(catalog):
 
 
 # Funciones para la carga de datos
+
 
 # Funciones de ordenamiento
 
@@ -139,3 +143,37 @@ def values_maps(map):
     return model.values_maps(map)
 def cantidad_por_genero(lista,catalog):
     return model.cantidad_por_genero(lista,catalog)
+def Top_tracks_hashtag(lista,catalog):
+    return model.Top_tracks_hashtag(lista,catalog)
+
+
+
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory

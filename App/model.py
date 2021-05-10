@@ -65,7 +65,11 @@ def newCatalog():
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
-    catalog['value_sent'] = mp.newMap(70000,
+    catalog['track_id_hashtrag'] = mp.newMap(70000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   comparefunction=comparekeys)
+    catalog['hashtag'] = mp.newMap(70000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    comparefunction=comparekeys)
@@ -129,16 +133,19 @@ def addcontent(catalog, content):
     
 
 def addSentiment(catalog,valuesent):
-    valuesents = valuesent['hashtag'].split(";") 
+    valuesents = valuesent['hashtag'].split(",") 
      
     for hastag in valuesents:
-        addsongmap(catalog, hastag, valuesent,"value_sent")
+        addsongmap(catalog, hastag, valuesent,"hashtag")
      
     
 
 def addHashtagtrack(catalog,hashtag):
     updateIndex(catalog['created_at'], hashtag,"created_at","track_id",True)
-
+    tracks = hashtag['track_id'].split(",") 
+     
+    for tracks_especifico in tracks:
+        addsongmap(catalog, tracks_especifico, hashtag,"track_id_hashtrag")
 
 def addgenero(catalog,genero):
 
@@ -298,6 +305,38 @@ def transform_hora(hora):
         result = datetime.time(int(time[0]),int(time[1]))
     
         return result
+def Top_tracks_hashtag(lista,catalog):
+    i=1
+    lista_retornar=lt.newList(datastructure="ARRAY_LIST" )
+    while i<=10:
+        h=random.randint(1,lt.size(lista))
+        elemento=lt.getElement(lista,h)
+        lis=mp.get(catalog["track_id_hashtrag"],str(elemento))
+        num=0
+        vader=0
+        for char in lt.iterator(lis["value"]["song"]):
+            lista_repeticiones=[]
+            if char["hashtag"] not in lista_repeticiones:
+                lista_repeticiones.append(char["hashtag"])
+                if mp.contains(catalog["hashtag"],str(char["hashtag"]))==True:
+                    info=mp.get(catalog["hashtag"],str(char["hashtag"]))
+                    info=lt.getElement(info["value"]["song"],1)
+                    if info["vader_avg"] != " ":
+                        vader+=float(info["vader_avg"])
+                        num+=1
+                    
+        if num==0:
+
+            vader=vader/1
+        else:
+            vader=vader/num
+        
+        dato={"track_id":str(elemento),"num_hastags":str(num),"Vader":str(vader)}
+        lt.addLast(lista_retornar,dato)
+        i+=1
+        lista_retornar=organizacion_req5(lista_retornar,lt.size(lista_retornar))
+    
+    return lista_retornar
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def cmpare_two_list(list1,list2):
@@ -321,19 +360,25 @@ def lista_por_genero(catalog,n):
     tudo=(om.values(catalog["tempo"],minimo,maximo)) 
        
     return tudo
+
 def cantidad_por_genero(lista,catalog):
     lista_but_ID=list_only_id(lista,"track_id")
     generso_musicales=values_maps(catalog["genero"])
     lista_que_se_imprime=lt.newList(datastructure="ARRAY_LIST")
+    mayor=0
     for char in lt.iterator(generso_musicales):
         lista_total=lista_por_genero(catalog,char)
         tempo_genero=list_only_id(lista_total,"track_id")
         one_list=cmpare_two_list(tempo_genero,lista_but_ID)
         dato={"Genero Musica":str(char),"Reproducciones totales":float(lt_size(one_list))}
         lt.addLast(lista_que_se_imprime,dato)
+        if int(lt.size(one_list))>int(mayor):
+            mayor=lt.size(one_list)
+            lista_completa=(one_list)
+        
     lista_organizada=organizacion(lista_que_se_imprime,lt.size(lista_que_se_imprime))
 
-    return lista_organizada
+    return lista_organizada,lista_completa
 
 
 
@@ -348,6 +393,14 @@ def organizacion(catalog,size):
     sub_list = lt.subList(catalog,0, size)
     sub_list = catalog.copy()
     sorted_list=merg.sort(sub_list, cmpfuncition_merge)
+    return  sorted_list
+def cmpfuncition_merge_num(video1, video2):
+
+    return (float(video1["num_hastags"]) > float(video2["num_hastags"]))
+def organizacion_req5(catalog,size):
+    sub_list = lt.subList(catalog,0, size)
+    sub_list = catalog.copy()
+    sorted_list=merg.sort(sub_list, cmpfuncition_merge_num)
     return  sorted_list
 
 def compareIds(id1, id2):
