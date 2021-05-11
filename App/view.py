@@ -318,7 +318,7 @@ while True:
 
         #Funcionamiento del req2
         start_time = time.process_time()
-        vid_energy= controller.values(catalog["energy_id_trak"],valor_min_ener,valor_max_ener)
+        vid_energy= controller.range_values(catalog["energy_id_trak"],valor_min_ener,valor_max_ener)
         vid_dance= controller.range_values(catalog["danceability_id_track"],valor_min_dance,valor_max_dance)
         vid_dance_rango=controller.list_only_id(vid_dance,"track_id")
         vid_energy_rango=controller.list_only_id(vid_energy,"track_id")
