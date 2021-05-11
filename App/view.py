@@ -77,6 +77,15 @@ def print_primeros_o_ultimos_n(first_last,n):
              print(str(char)+": "+str(mostrar[char]))
         print_separador()
         i+=g
+
+def print_req_2 (list):
+    print("Se ha encontrado un total de "+str(lt.size(list)))
+    i=1
+    while i<=lt.size(list):
+        char=lt.getElement(list,i)
+          
+        print("Track "+str(i)+": "+str(char)+" with energy of "+str(controller.get_someting_map(catalog["track"],char,"energy"))+" and danceability of "+str(controller.get_someting_map(catalog["track"],char,"danceability")))
+        i+=1
    
 def print_req_3 (list):
     print("Se ha encontrado un total de "+str(lt.size(list)))
@@ -212,6 +221,32 @@ while True:
 
     elif int(inputs[0]) == 3:
         TODO:print("req2")
+        #Inputs del usuario
+        valor_min_ener=float(input("Escriba el valor MINIMO de la carecteristica energy: \n"))
+        valor_max_ener=float(input("Escriba el valor MAXIMO de la caracteristica energy: \n"))
+        
+        valor_min_dance=float(input("Escriba el valor MINIMO de la carecteristica danceability: \n"))
+        valor_max_tem=float(input("Escriba el valor MAXIMO de la caracteristica danceability: \n"))
+
+        #Funcionamiento del req2
+        start_time = time.process_time()
+        vid_energy= controller.values(catalog["energy_id_trak"],valor_min_ener,valor_max_ener)
+        vid_dance= controller.range_values(catalog["danceability_id_track"],valor_min_dance,valor_max_dance)
+        vid_dance_rango=controller.list_only_id(vid_dance,"track_id")
+        vid_energy_rango=controller.list_only_id(vid_energy,"track_id")
+        print("Encontrando videos con las caracteristicas solicitadas... ")
+        one_list=controller.cmpare_two_list(vid_energy_rango,vid_dance_rango)
+        print("Eligiendo videos al azar... ")
+        random_election_list=controller.random_select(one_list,5)
+        print_separador_v2()
+        if lt.size==0:
+            print("No se ha encontrado ningún disco con ese rango de datos")
+        else:
+            print_req_2(random_election_list)
+        print_separador_v2()
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print(elapsed_time_mseg)
         pass
 
     elif int(inputs[0]) == 4:

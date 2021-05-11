@@ -62,7 +62,7 @@ def Loadcontext_content_fratures(catalog):
     """
     
     """
-    Contentfile = cf.data_dir + 'context_content_features-smallperse.csv'
+    Contentfile = cf.data_dir + 'context_content_features-5pct.csv'
     input_file = csv.DictReader(open(Contentfile, encoding='utf-8'), delimiter=",")
     for content in input_file:
         model.addcontent(catalog,content)
@@ -80,7 +80,7 @@ def loadSentiment_value(catalog):
 def loaduser_track_hastag(catalog):
 
 
-    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-smallperse.csv'
+    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-5pct.csv'
     input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
