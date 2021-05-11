@@ -28,7 +28,9 @@ from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
 assert cf
 import random
+
 import time
+import tracemalloc
 
 
 """
@@ -37,6 +39,63 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def print_separador():
     print("-----------------------------------------------(^(工)^)--------------------------------------------")
 def print_separador_v2():
@@ -88,11 +147,9 @@ def print_req_2 (list):
         i+=1
    
 def print_req_3 (list):
-    print("Se ha encontrado un total de "+str(lt.size(list)))
     i=1
     while i<=lt.size(list):
         char=lt.getElement(list,i)
-          
         print("Track "+str(i)+": "+str(char)+" with intrumentalness of "+str(controller.get_someting_map(catalog["track"],char,"instrumentalness"))+" and tempo of "+str(controller.get_someting_map(catalog["track"],char,"tempo")))
         i+=1
 
@@ -135,7 +192,7 @@ def printreq4(titulos):
                
                
 def print_total_track_req5(list,hora_min,hora_max):
-    print("Hay un total de "+str(controller.conteo_llaves_unicas(list))+" reproducciones entre las "+str(hora_min)+" y las "+str(hora_max))
+    print("Hay un total de "+str(controller.conteo_range_value(list))+" reproducciones entre las "+str(hora_min)+" y las "+str(hora_max))
 
 
 def print_total_genero_musical_req5(lista,catalog):
@@ -206,18 +263,49 @@ while True:
 
     elif int(inputs[0]) == 2:
         caracteristica=str(input("Escriba la caracteristica que desea consultar\n"))
-        start_time = time.process_time()
+       
         valor_min=float(input("Escriba el valor minimo de la carecteristica que desea consultar\n"))
         valor_max=float(input("Escriba el valor maximo de la caracteristica que desea consultar\n"))
+        
+        start_time = time.process_time()
+    
+        delta_time = -1.0
+        delta_memory = -1.0
+
+    # inicializa el processo para medir memoria
+        tracemalloc.start()
+
+    # toma de tiempo y memoria al inicio del proceso
+        start_time = getTime()
+        start_memory = getMemory()
+
+
+
+
+
         total=controller.range_values(catalog[caracteristica],valor_min,valor_max)
         print_separador_v2()
         print(caracteristica+" entre "+str(valor_min)+" hasta "+str(valor_max))
 
         print ("El total de reproducción entre este rango es de "+str(controller.conteo_range_value(total)))
         print ("El total de artistas unicos dentro de este rango es de: "+str(controller.conteo_llaves_unicas(total)))
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000
-        print(elapsed_time_mseg)
+        
+        
+        
+        stop_memory = getMemory()
+        stop_time = getTime()
+
+    # finaliza el procesos para medir memoria
+        tracemalloc.stop()
+
+    # calculando la diferencia de tiempo y memoria
+        delta_time = stop_time - start_time
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print(delta_memory)
+
+
+
+
 
     elif int(inputs[0]) == 3:
         TODO:print("req2")
@@ -253,27 +341,49 @@ while True:
         
         valor_min_inst=float(input("Escriba el valor minimo de la carecteristica instrumentalness\n"))
         valor_max_inst=float(input("Escriba el valor maximo de la caracteristica instrumentalness\n"))
-        
         valor_min_tem=float(input("Escriba el valor minimo de la carecteristica tempo\n"))
         valor_max_tem=float(input("Escriba el valor maximo de la caracteristica tempo\n"))
+        
         start_time = time.process_time()
+    
+  
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_memory = getMemory()
+
+
+
+
+
         vid_instrumentalness= controller.range_values(catalog["instrumentalness_id_trak"],valor_min_inst,valor_max_inst)
         vid_temp= controller.range_values(catalog["tempo_id_track"],valor_min_tem,valor_max_tem)
-        vid_temp_rango=controller.list_only_id(vid_temp,"track_id")
-        vid_instrumentalness_rango=controller.list_only_id(vid_instrumentalness,"track_id")
+        vid_temp_rango=controller.list_only_id_listnorm(vid_temp,"track_id")
+        
         print("Encontrando videos con las caracteristicas solicitadas...")
-        one_list=controller.cmpare_two_list(vid_instrumentalness_rango,vid_temp_rango)
+        vid_instrumentalness_rango=controller.list_only_id_listnorm(vid_instrumentalness,"track_id")
+       
+        one_list=controller.normalcmpare_two_list(vid_instrumentalness_rango,vid_temp_rango)
         print("Eligiendo videos al azar ")
         random_election_list=controller.random_select(one_list,5)
+        print("Se ha encontrado un total de "+str(lt.size(one_list))+ " tracks unicos. " )
         print_separador_v2()
-        if lt.size==0:
+        if lt.size(random_election_list)==0:
             print("No se ha encontrado ningún disco con ese rango de datos")
         else:
             print_req_3(random_election_list)
+        
+        
         print_separador_v2()
+        stop_memory = getMemory()
+        tracemalloc.stop()
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000
         print(elapsed_time_mseg)
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print(delta_memory)
+    
+    
+    
     
     elif int(inputs[0]) == 5:
         
@@ -296,11 +406,28 @@ while True:
                 print_tabla_generos()
                 generos_a_buscar=str(input("Escriba los generos que desea buscar separado por comas como se muestra en este ejemplo:Reggae,Hip-hop,Pop\n"))
                 print("Buscando...")
+                
                 start_time = time.process_time()
+    
+  
+                delta_memory = -1.0
+                tracemalloc.start()
+                start_memory = getMemory()
+
+
+
+
                 printreq4(generos_a_buscar)
+
+
+
+                stop_memory = getMemory()
+                tracemalloc.stop()
                 stop_time = time.process_time()
                 elapsed_time_mseg = (stop_time - start_time)*1000
                 print(elapsed_time_mseg)
+                delta_memory = deltaMemory(start_memory, stop_memory)
+                print(delta_memory)
                 
                 n=False
             else:
@@ -311,13 +438,32 @@ while True:
     elif int(inputs[0]) == 6:
         hora_min= input ("Escriba el valor minimo de la hora del día como se muestra en el siguiente ejemplo:07:00\n")
         hora_max=input("Escriba el valor maximo de la hora del día \n")
+        start_time = time.process_time()
+    
+  
+        delta_memory = -1.0
+        tracemalloc.start()
+        start_memory = getMemory()
+
         hora_min=controller.transform_hora(hora_min)
         hora_max=controller.transform_hora(hora_max)
         total=controller.range_values(catalog["created_at"],hora_min, hora_max)
         print_total_track_req5(total,hora_min,hora_max)
         print_total_genero_musical_req5(total,catalog)
+
+
+
+        stop_memory = getMemory()
+        tracemalloc.stop()
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print(elapsed_time_mseg)
+        delta_memory = deltaMemory(start_memory, stop_memory)
+        print(delta_memory)
         
 
     else:
         sys.exit(0)
 sys.exit(0)
+
+

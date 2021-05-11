@@ -42,9 +42,7 @@ def initCatalog():
     return catalog
 
 def loadData(catalog):
-    start_time = time.process_time()
-    
-    
+ 
 
     loaduser_track_hastag(catalog)
     print("Se ha cargado user_track_hashtag...")
@@ -54,10 +52,10 @@ def loadData(catalog):
     print("Se ha cargado sentiment_value...")
     load_genero_musical(catalog)
     print("Se ha cargado los generos musicales...")
-   
-    stop_time = time.process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print(elapsed_time_mseg)
+
+
+
+
 def Loadcontext_content_fratures(catalog):
     """
     
@@ -145,7 +143,10 @@ def cantidad_por_genero(lista,catalog):
     return model.cantidad_por_genero(lista,catalog)
 def Top_tracks_hashtag(lista,catalog):
     return model.Top_tracks_hashtag(lista,catalog)
-
+def normalcmpare_two_list(lista1,lista2):
+    return model.normalcmpare_two_list(lista1,lista2)
+def list_only_id_listnorm(lista, string):
+    return model.list_only_id_listnorm(lista,string)
 
 
 
