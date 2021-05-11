@@ -314,7 +314,7 @@ while True:
         valor_max_ener=float(input("Escriba el valor MAXIMO de la caracteristica energy: \n"))
         
         valor_min_dance=float(input("Escriba el valor MINIMO de la carecteristica danceability: \n"))
-        valor_max_tem=float(input("Escriba el valor MAXIMO de la caracteristica danceability: \n"))
+        valor_max_dance=float(input("Escriba el valor MAXIMO de la caracteristica danceability: \n"))
 
         #Funcionamiento del req2
         start_time = time.process_time()
