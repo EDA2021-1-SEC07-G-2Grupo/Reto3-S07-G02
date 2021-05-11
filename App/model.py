@@ -257,6 +257,13 @@ def list_only_id(lista,coso):
             lt.addLast(lista_nuea, elemento[coso])
      return lista_nuea
 
+def list_only_id_listnorm(lista,coso):
+     lista_nuea=[]
+     for char in lt.iterator(lista):
+            elemento=lt.getElement(char["song"],1)
+            lista_nuea.append( elemento[coso])
+     return lista_nuea
+
 def list_only_id_repetición(lista,coso):
      lista_nuea=lt.newList(datastructure="ARRAY_LIST")
      for char in lt.iterator(lista):
@@ -361,6 +368,18 @@ def cmpare_two_list(list1,list2):
         if lt.isPresent(lista_grande,char)>0:
             lt.addLast(new_list,char)
     return new_list
+def normalcmpare_two_list(list1,list2):
+    new_list=lt.newList(datastructure="ARRAY_LIST")
+    if len(list1)>len(list2):
+        lista_pequenia=list2
+        lista_grande=list1
+    else:
+        lista_pequenia=list1
+        lista_grande=list2
+    for char in lista_pequenia:
+        if char in lista_grande:
+            lt.addLast(new_list,char)
+    return new_list
 
 
 
@@ -372,14 +391,14 @@ def lista_por_genero(catalog,n):
     return tudo
 
 def cantidad_por_genero(lista,catalog):
-    lista_but_ID=list_only_id_repetición(lista,"track_id")
+    lista_but_ID=list_only_id_listnorm(lista,"track_id")
     generso_musicales=values_maps(catalog["genero"])
     lista_que_se_imprime=lt.newList(datastructure="ARRAY_LIST")
     mayor=0
     for char in lt.iterator(generso_musicales):
         lista_total=lista_por_genero(catalog,char)
-        tempo_genero=list_only_id(lista_total,"track_id")
-        one_list=cmpare_two_list(tempo_genero,lista_but_ID)
+        tempo_genero=list_only_id_listnorm(lista_total,"track_id")
+        one_list=normalcmpare_two_list(tempo_genero,lista_but_ID)
         dato={"Genero Musica":str(char),"Reproducciones totales":float(lt_size(one_list))}
         lt.addLast(lista_que_se_imprime,dato)
         if int(lt.size(one_list))>int(mayor):

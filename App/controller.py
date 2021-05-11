@@ -42,9 +42,7 @@ def initCatalog():
     return catalog
 
 def loadData(catalog):
-    start_time = time.process_time()
-    
-    
+ 
 
     loaduser_track_hastag(catalog)
     print("Se ha cargado user_track_hashtag...")
@@ -54,15 +52,15 @@ def loadData(catalog):
     print("Se ha cargado sentiment_value...")
     load_genero_musical(catalog)
     print("Se ha cargado los generos musicales...")
-   
-    stop_time = time.process_time()
-    elapsed_time_mseg = (stop_time - start_time)*1000
-    print(elapsed_time_mseg)
+
+
+
+
 def Loadcontext_content_fratures(catalog):
     """
     
     """
-    Contentfile = cf.data_dir + 'context_content_features-smallperse.csv'
+    Contentfile = cf.data_dir + 'context_content_features-small.csv'
     input_file = csv.DictReader(open(Contentfile, encoding='utf-8'), delimiter=",")
     for content in input_file:
         model.addcontent(catalog,content)
@@ -80,7 +78,7 @@ def loadSentiment_value(catalog):
 def loaduser_track_hastag(catalog):
 
 
-    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-smallperse.csv'
+    HastagFile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
     input_file = csv.DictReader(open(HastagFile, encoding='utf-8'), delimiter=",")
     for hashtagtrack in input_file:
         model.addHashtagtrack(catalog, hashtagtrack)
@@ -145,7 +143,10 @@ def cantidad_por_genero(lista,catalog):
     return model.cantidad_por_genero(lista,catalog)
 def Top_tracks_hashtag(lista,catalog):
     return model.Top_tracks_hashtag(lista,catalog)
-
+def normalcmpare_two_list(lista1,lista2):
+    return model.normalcmpare_two_list(lista1,lista2)
+def list_only_id_listnorm(lista, string):
+    return model.list_only_id_listnorm(lista,string)
 
 
 
