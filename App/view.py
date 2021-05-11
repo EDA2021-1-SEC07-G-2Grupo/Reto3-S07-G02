@@ -79,11 +79,9 @@ def print_primeros_o_ultimos_n(first_last,n):
         i+=g
    
 def print_req_3 (list):
-    print("Se ha encontrado un total de "+str(lt.size(list)))
     i=1
     while i<=lt.size(list):
         char=lt.getElement(list,i)
-          
         print("Track "+str(i)+": "+str(char)+" with intrumentalness of "+str(controller.get_someting_map(catalog["track"],char,"instrumentalness"))+" and tempo of "+str(controller.get_someting_map(catalog["track"],char,"tempo")))
         i+=1
 
@@ -126,7 +124,7 @@ def printreq4(titulos):
                
                
 def print_total_track_req5(list,hora_min,hora_max):
-    print("Hay un total de "+str(controller.conteo_llaves_unicas(list))+" reproducciones entre las "+str(hora_min)+" y las "+str(hora_max))
+    print("Hay un total de "+str(controller.conteo_range_value(list))+" reproducciones entre las "+str(hora_min)+" y las "+str(hora_max))
 
 
 def print_total_genero_musical_req5(lista,catalog):
@@ -218,7 +216,6 @@ while True:
         
         valor_min_inst=float(input("Escriba el valor minimo de la carecteristica instrumentalness\n"))
         valor_max_inst=float(input("Escriba el valor maximo de la caracteristica instrumentalness\n"))
-        
         valor_min_tem=float(input("Escriba el valor minimo de la carecteristica tempo\n"))
         valor_max_tem=float(input("Escriba el valor maximo de la caracteristica tempo\n"))
         start_time = time.process_time()
@@ -227,11 +224,14 @@ while True:
         vid_temp_rango=controller.list_only_id(vid_temp,"track_id")
         vid_instrumentalness_rango=controller.list_only_id(vid_instrumentalness,"track_id")
         print("Encontrando videos con las caracteristicas solicitadas...")
+        print(lt.size(vid_instrumentalness))
+        print(lt.size(vid_instrumentalness_rango))
         one_list=controller.cmpare_two_list(vid_instrumentalness_rango,vid_temp_rango)
         print("Eligiendo videos al azar ")
         random_election_list=controller.random_select(one_list,5)
+        print("Se ha encontrado un total de "+str(lt.size(one_list))+ " tracks unicos. " )
         print_separador_v2()
-        if lt.size==0:
+        if lt.size(random_election_list)==0:
             print("No se ha encontrado ningún disco con ese rango de datos")
         else:
             print_req_3(random_election_list)
@@ -261,11 +261,9 @@ while True:
                 print_tabla_generos()
                 generos_a_buscar=str(input("Escriba los generos que desea buscar separado por comas como se muestra en este ejemplo:Reggae,Hip-hop,Pop\n"))
                 print("Buscando...")
-                start_time = time.process_time()
+               
                 printreq4(generos_a_buscar)
-                stop_time = time.process_time()
-                elapsed_time_mseg = (stop_time - start_time)*1000
-                print(elapsed_time_mseg)
+                
                 
                 n=False
             else:
@@ -276,11 +274,15 @@ while True:
     elif int(inputs[0]) == 6:
         hora_min= input ("Escriba el valor minimo de la hora del día como se muestra en el siguiente ejemplo:07:00\n")
         hora_max=input("Escriba el valor maximo de la hora del día \n")
+        start_time = time.process_time()
         hora_min=controller.transform_hora(hora_min)
         hora_max=controller.transform_hora(hora_max)
         total=controller.range_values(catalog["created_at"],hora_min, hora_max)
         print_total_track_req5(total,hora_min,hora_max)
         print_total_genero_musical_req5(total,catalog)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print(elapsed_time_mseg)
         
 
     else:

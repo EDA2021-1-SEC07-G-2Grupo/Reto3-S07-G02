@@ -256,6 +256,15 @@ def list_only_id(lista,coso):
             elemento=lt.getElement(char["song"],1)
             lt.addLast(lista_nuea, elemento[coso])
      return lista_nuea
+
+def list_only_id_repetición(lista,coso):
+     lista_nuea=lt.newList(datastructure="ARRAY_LIST")
+     for char in lt.iterator(lista):
+            for elemento in lt.iterator(char["song"]):
+                lt.addLast(lista_nuea, elemento[coso])
+     return lista_nuea
+
+
 def lista_1_elemento(lista,coso,i,k):
     print(lt.size(lt.getElement(lista,i)))
     
@@ -321,7 +330,8 @@ def Top_tracks_hashtag(lista,catalog):
                 if mp.contains(catalog["hashtag"],str(char["hashtag"]))==True:
                     info=mp.get(catalog["hashtag"],str(char["hashtag"]))
                     info=lt.getElement(info["value"]["song"],1)
-                    if info["vader_avg"] != " ":
+                    if "."  in info["vader_avg"]:
+                       
                         vader+=float(info["vader_avg"])
                         num+=1
                     
@@ -362,7 +372,7 @@ def lista_por_genero(catalog,n):
     return tudo
 
 def cantidad_por_genero(lista,catalog):
-    lista_but_ID=list_only_id(lista,"track_id")
+    lista_but_ID=list_only_id_repetición(lista,"track_id")
     generso_musicales=values_maps(catalog["genero"])
     lista_que_se_imprime=lt.newList(datastructure="ARRAY_LIST")
     mayor=0
