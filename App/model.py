@@ -94,6 +94,10 @@ def newCatalog():
                                       comparefunction=compareIds)
     catalog['tempo_id_track'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
+    catalog['energy_id_trak'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareIds)
+    catalog['danceabillity_id_track'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareIds)                                     
     catalog['created_at'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareIds)
 
@@ -119,6 +123,8 @@ def addcontent(catalog, content):
     updateIndex(catalog['energy'], content,"energy","artist_id",False)
     updateIndex(catalog['instrumentalness_id_trak'], content,"instrumentalness","track_id",False)
     updateIndex(catalog['tempo_id_track'], content,"tempo","track_id",False)
+    updateIndex(catalog['energy_id_trak'], content,"energy","track_id",False)
+    updateIndex(catalog['danceabillity_id_track'], content,"danceabillity","track_id",False)
    
     #map
     artist = content['artist_id'].split(",") 
